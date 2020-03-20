@@ -1,10 +1,10 @@
-app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($scope, indexFactory, configFactory) => {
+app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($scope, indexFactory,configFactory) => {
 
-	$scope.messages = [ ];
-	$scope.players = { };
+	$scope.messages = [];
+	$scope.players = {};
 
 	$scope.init = () => {
-		const username = prompt('Bir Kullanıcı Adı Girin');
+		const username = prompt('Lütfen Bir Kullanıcı Adı Girin');
 
 		if (username)
 			initSocket(username);
@@ -19,27 +19,12 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 		});
 	}
 
-	function bubbleLifeTime(message) {
-		const min = 500;  // min bubble life time
-		const max = 3000; // max bubble life time
-		const msPerLetter = 40; // miliseconds per letter
-		let bubbleTime;
-
-		bubbleTime = min + (message.length * msPerLetter);
-
-		if (bubbleTime > max)
-			return max;
-		else
-			return bubbleTime;
-
-	}
-
-	function showBubble(id, message) {
-		$('#'+ id).find('.message').show().html(message);
+	function showBuble(id, message) {
+		$('#' + id).find('.message').show().html(message);
 
 		setTimeout(() => {
-			$('#'+ id).find('.message').hide();
-		}, bubbleLifeTime(message));
+			$('#' + id).find('.message').hide();
+		}, 2000);
 	}
 
 	async function initSocket(username) {
@@ -48,8 +33,8 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 			reconnectionDelay: 600
 		};
 
-		try{
-			const socketUrl = await configFactory.getConfig();
+		try {
+			const socketUrl=await configFactory.getConfig();
 			const socket = await indexFactory.connectSocket(socketUrl.data.socketUrl, connectionOptions);
 
 			socket.emit('newUser', { username });
@@ -62,11 +47,10 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 			socket.on('newUser', (data) => {
 				const messageData = {
 					type: {
-						code: 0, // server or user message
-						message: 1 // login or disconnect message
-					}, // info
-					username: data.username,
-
+						code: 0, //server or user message
+						message: 1 // login or logout message
+					}, //info
+					username: data.username
 				};
 
 				$scope.messages.push(messageData);
@@ -78,9 +62,9 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 			socket.on('disUser', (data) => {
 				const messageData = {
 					type: {
-						code: 0,
-						message: 0
-					}, // info
+						code: 0, //server or user message
+						message: 0 // login or logout message
+					},  //info
 					username: data.username
 				};
 
@@ -90,40 +74,40 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 				$scope.$apply();
 			});
 
-			socket.on('animate', data => {
-				$('#'+ data.socketId).animate({ 'left': data.x, 'top': data.y }, () => {
+			socket.on('animate', (data) => {
+				$('#' + data.socketId).animate({ 'left': data.x, 'top': data.y }, () => {
 					animate = false;
 				});
 			});
 
-			socket.on('newMessage', message => {
-				$scope.messages.push(message);
+			socket.on('newMessage', (data) => {
+				$scope.messages.push(data);
 				$scope.$apply();
-				showBubble(message.socketId, message.text)
+				showBuble(message.socketId, message.text);
 				scrollTop();
 			});
 
 			let animate = false;
 			$scope.onClickPlayer = ($event) => {
-				if (!animate){
+				if (!animate) {
 					let x = $event.offsetX;
 					let y = $event.offsetY;
 
 					socket.emit('animate', { x, y });
 
 					animate = true;
-					$('#'+ socket.id).animate({ 'left': x, 'top': y }, () => {
+					$('#' + socket.id).animate({ 'left': x, 'top': y }, () => {
 						animate = false;
 					});
 				}
 			};
 
-			$scope.newMessage = () =>{
+			$scope.newMessage = () => {
 				let message = $scope.message;
 
 				const messageData = {
 					type: {
-						code: 1, // server or user message
+						code: 1, //server or user message
 					},
 					username: username,
 					text: message
@@ -134,10 +118,10 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 
 				socket.emit('newMessage', messageData);
 
-				showBubble(socket.id, message);
+				showBuble(socket.id, message);
 				scrollTop();
 			};
-		}catch(err){
+		} catch (err) {
 			console.log(err);
 		}
 	}
