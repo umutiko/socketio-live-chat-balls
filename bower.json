@@ -1,0 +1,14 @@
+{
+  "name": "socketio-live-chat-balls",
+  "description": "",
+  "main": "",
+  "authors": [
+    "ahmettinastepe <ahmettinastepe0@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ahmettinastepe/socketio-live-chat-balls",
+  "dependencies": {
+    "angular": "^1.7.9",
+    "semantic": "^2.4.1"
+  }
+}
