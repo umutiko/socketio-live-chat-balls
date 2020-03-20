@@ -4,7 +4,7 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 	$scope.players = { };
 
 	$scope.init = () => {
-		const username = prompt('Please enter username');
+		const username = prompt('Bir Kullanıcı Adı Girin');
 
 		if (username)
 			initSocket(username);
@@ -49,8 +49,8 @@ app.controller('indexController', ['$scope', 'indexFactory', 'configFactory', ($
 		};
 
 		try{
-			const sockerUrl = await configFactory.getConfig();
-			const socket = await indexFactory.connectSocket(sockerUrl.data.socketUrl, connectionOptions);
+			const socketUrl = await configFactory.getConfig();
+			const socket = await indexFactory.connectSocket(socketUrl.data.socketUrl, connectionOptions);
 
 			socket.emit('newUser', { username });
 
