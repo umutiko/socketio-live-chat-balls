@@ -19,7 +19,7 @@ block content
         .ui.items.chat#chat-area
           .item(ng-repeat="message in messages")
             .content(ng-if="!message.type.code")
-              span(style='color:green; font-weight:bold;') [SERVER] &nbsp;
+              span(style='color:red; font-weight:bold;') [SERVER] &nbsp;
               a.header.name {{ message.username }} &nbsp;
               .description.message(ng-if="!message.type.message") ayrıldı
               .description.message(ng-if="message.type.message") katıldı
@@ -30,4 +30,4 @@ block content
 
         form.ui.action.input.fluid(ng-submit="newMessage()")
           input(ng-model='message' placeholder='Mesajını Buraya Yaz...')
-          button.ui.button(type="submit") Gönder
+          button.ui.button(type="submit" style="background-color:#006bd4;") Gönder
